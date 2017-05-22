@@ -17,6 +17,8 @@
 package org.gradle.internal.work
 
 import org.gradle.api.Action
+import org.gradle.initialization.DefaultParallelismConfiguration
+import org.gradle.internal.concurrent.ParallelExecutionManager
 import org.gradle.internal.resources.DefaultResourceLockCoordinationService
 import org.gradle.internal.resources.TestTrackedResourceLock
 import spock.lang.Specification
@@ -24,7 +26,7 @@ import spock.lang.Specification
 
 class DefaultWorkerLeaseServiceTest extends Specification {
     def coordinationService = new DefaultResourceLockCoordinationService()
-    def workerLeaseService = new DefaultWorkerLeaseService(coordinationService, true, 1)
+    def workerLeaseService = new DefaultWorkerLeaseService(coordinationService, parallelExecutionManager())
 
     def "can use withLock to execute an action with resources locked"() {
         boolean executed = false
@@ -107,5 +109,11 @@ class DefaultWorkerLeaseServiceTest extends Specification {
 
     TestTrackedResourceLock resourceLock(String displayName) {
         return resourceLock(displayName, false)
+    }
+
+    ParallelExecutionManager parallelExecutionManager() {
+        return Stub(ParallelExecutionManager) {
+            getParallelismConfiguration() >> new DefaultParallelismConfiguration(true, 1)
+        }
     }
 }
