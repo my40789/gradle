@@ -19,8 +19,10 @@ package org.gradle.nativeplatform.toolchain.internal
 import org.gradle.api.Action
 import org.gradle.api.internal.file.BaseDirFileResolver
 import org.gradle.api.internal.file.TestFiles
+import org.gradle.initialization.DefaultParallelismConfiguration
 import org.gradle.internal.concurrent.DefaultExecutorFactory
 import org.gradle.internal.concurrent.GradleThread
+import org.gradle.internal.concurrent.ParallelExecutionManager
 import org.gradle.internal.operations.BuildOperationExecutor
 import org.gradle.internal.operations.DefaultBuildOperationQueueFactory
 import org.gradle.internal.operations.logging.BuildOperationLogger
@@ -57,8 +59,9 @@ abstract class NativeCompilerTest extends Specification {
 
     private BuildOperationListener buildOperationListener = Mock(BuildOperationListener)
     private TimeProvider timeProvider = Mock(TimeProvider)
+    ParallelExecutionManager parallelExecutionManager = Stub(ParallelExecutionManager) { getParallelismConfiguration() >> DefaultParallelismConfiguration.DEFAULT }
     protected BuildOperationExecutor buildOperationExecutor = new DefaultBuildOperationExecutor(buildOperationListener, timeProvider, new NoOpProgressLoggerFactory(),
-        new DefaultBuildOperationQueueFactory(workerLeaseService), new DefaultExecutorFactory(), 1)
+        new DefaultBuildOperationQueueFactory(workerLeaseService), new DefaultExecutorFactory(), parallelExecutionManager)
 
     def setup() {
         _ * workerLeaseService.withLocks(_) >> { args ->
