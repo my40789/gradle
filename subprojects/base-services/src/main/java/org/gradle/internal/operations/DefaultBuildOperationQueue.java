@@ -16,6 +16,7 @@
 
 package org.gradle.internal.operations;
 
+import com.google.common.collect.Lists;
 import org.gradle.internal.UncheckedException;
 import org.gradle.internal.work.WorkerLeaseRegistry;
 import org.gradle.internal.work.WorkerLeaseService;
@@ -155,7 +156,7 @@ class DefaultBuildOperationQueue<T extends BuildOperation> implements BuildOpera
         }
 
         private void runBatch(final T firstOperation) {
-            workerLeases.withLocks(parentWorkerLease.createChild()).execute(new Runnable() {
+            workerLeases.withLocks(Lists.newArrayList(parentWorkerLease.createChild()), new Runnable() {
                 @Override
                 public void run() {
                     T operation = firstOperation;

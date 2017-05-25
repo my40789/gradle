@@ -18,6 +18,7 @@ package org.gradle.initialization;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Lists;
 import org.gradle.BuildListener;
 import org.gradle.BuildResult;
 import org.gradle.api.Task;
@@ -113,7 +114,7 @@ public class DefaultGradleLauncher implements GradleLauncher {
         // TODO:pm Move this to RunAsBuildOperationBuildActionRunner when BuildOperationWorkerRegistry scope is changed
         final AtomicReference<BuildResult> buildResult = new AtomicReference<BuildResult>();
         WorkerLeaseService workerLeaseService = buildServices.get(WorkerLeaseService.class);
-        workerLeaseService.withLocks(workerLeaseService.getWorkerLease()).execute(new Runnable() {
+        workerLeaseService.withLocks(Lists.newArrayList(workerLeaseService.getWorkerLease()), new Runnable() {
             @Override
             public void run() {
                 Throwable failure = null;
