@@ -18,7 +18,6 @@ package org.gradle.internal.dispatch;
 
 import org.gradle.internal.UncheckedException;
 import org.gradle.internal.concurrent.AsyncStoppable;
-import org.gradle.internal.operations.BuildOperationIdentifierPreservingRunnable;
 
 import java.util.LinkedList;
 import java.util.concurrent.Executor;
@@ -67,7 +66,7 @@ public class AsyncDispatch<T> implements Dispatch<T>, AsyncStoppable {
      */
     public void dispatchTo(final Dispatch<? super T> dispatch) {
         onDispatchThreadStart();
-        executor.execute(new BuildOperationIdentifierPreservingRunnable(new Runnable() {
+        executor.execute(new Runnable() {
             public void run() {
                 try {
                     dispatchMessages(dispatch);
@@ -75,7 +74,7 @@ public class AsyncDispatch<T> implements Dispatch<T>, AsyncStoppable {
                     onDispatchThreadExit();
                 }
             }
-        }));
+        });
     }
 
     private void onDispatchThreadStart() {
