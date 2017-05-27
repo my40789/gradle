@@ -139,9 +139,8 @@ class CompositeBuildDependencyArtifactsIntegrationTest extends AbstractComposite
         resolveArtifacts()
 
         then:
-        executed ":buildB", ":buildC", ":resolve"
         executedInOrder ":buildC:jar", ":buildB:jar", ":resolve"
-        executedInOrder ":buildC:compileJava", ":buildB:compileJava"
+        executedInOrder ":buildC:compileJava", ":buildB:compileJava", ":resolve"
         assertResolved buildB.file('build/libs/buildB-1.0.jar'), buildC.file('build/libs/buildC-1.0.jar')
     }
 
@@ -166,9 +165,8 @@ class CompositeBuildDependencyArtifactsIntegrationTest extends AbstractComposite
         resolveArtifacts()
 
         then:
-        executed ":buildB", ":buildC", ":resolve"
-        executedInOrder ":buildC:jar", ":buildB:jar"
-        executedInOrder ":buildC:compileJava", ":buildB:compileJava"
+        executedInOrder ":buildC:jar", ":buildB:jar", ":resolve"
+        executedInOrder ":buildC:compileJava", ":buildB:compileJava", ":resolve"
         assertResolved buildB.file('build/libs/buildB-1.0.jar'), buildC.file('build/libs/buildC-1.0.jar')
     }
 
